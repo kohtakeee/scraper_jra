@@ -9,15 +9,13 @@
 \usepackage[T1]{fontenc}    % this is needed for correct output of umlauts in pdf
 % the following is needed for syntax highlighting
 \usepackage{color}
-\usepackage{graphicx}
-\usepackage{hhline}
 
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
 \definecolor{mauve}{rgb}{0.58,0,0.82}
 
 \lstset{ %
-  language=C,       % the language of the code
+  language=bash,       % the language of the code
   basicstyle=\ttfamily,       % the size of the fonts that are used for the code
   numbers=left,                   % where to put the line-numbers
   numberstyle=\color{gray},  % the style that is used for the line-numbers
@@ -43,48 +41,45 @@
   xleftmargin=17pt,
   framexleftmargin=17pt
 }
-
-\title {ディープラーニングによるデータセット作成のための仕様書}
-\author{池守和槻 \and 著者名2}
-\date{2009/05/24}
-
-
 \begin{document}
-  % タイトルを出力
-  \maketitle
+\title{競馬予測のためのスクレイピングの計画書}
+\author{池守和槻}
+\date{2019/08/12}
+\maketitle
 
-  \section{はじめに}
-    このpdfはディープラーニングによる競馬予想に用いるデータセット作成のための仕様書である。
-    本仕様書では以下のことを定義する。
-    \begin{enumerate}
-      \item スクレイピングに用いる言語とライブラリ、またバージョン
-      \item スクレピングする対象のサイト
-      \item スクレピングする情報
-      \item スクレイピングをするときのプログラムの設計
-      \item プログラムの各メソッド定義
-    \end{enumerate}
+\section{目的}
+\section{収集するデータ}
+  \begin{itemize}
+    \item 
+  \end{itemize}
+\section{対象のサイト}
+\section{開発について}
+  \subsection{開発手法}
+  \subsection{pythonのバージョンと使用するライブラリ}
+  \subsection{ディレクトリ構造}
+    % ソースコードを直接記入
+    \begin{lstlisting}[caption=プロジェクトのディレクトリ構造,label=ラベル]
+      .
+      ├── README.md
+      ├── docs
+      │   ├── config.pdf
+      │   └── config.tex
+      └── src
+          ├── lib
+          │   ├── scraper.py
+          │   └── test_scraper.py
+          └── main.py
+    \end{lstlisting}
 
-  \subsection{スクレイピングに用いる言語とライブラリ、またバージョン}
-    \begin{table}[htb]
-      \begin{center}
-        \caption{使用言語}
-        \begin{tabular}{|l|c|c|} \hline
-          使用ライブラリ & バージョン & 用途 \\ \hline \hline
-          buetifu soup & 1     & スクレピング  \\ \hline
-        \end{tabular}
-      \end{center}
-    \end{table}
+  \subsection{作成するモジュールのメソッドについて}
+  \subsection{データの保存方法}
 
 
-    \begin{table}[htb]
-      \begin{center}
-        \caption{使用ライブラリ}
-        \begin{tabular}{|l|c|c|} \hline
-          使用ライブラリ & バージョン & 用途 \\ \hline \hline
-          buetifu soup & 1     & スクレピング  \\ \hline
-        \end{tabular}
-      \end{center}
-    \end{table}
+
+
+
+
+
 
 
 
