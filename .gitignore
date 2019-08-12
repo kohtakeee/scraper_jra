@@ -1,0 +1,5 @@
+# __pycacheはgitにあげない
+__pycache__/
+
+# atomの.DS_Storeもgitにあげない
+.DS_store
