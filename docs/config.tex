@@ -2,6 +2,8 @@
 \usepackage[top=1cm,bottom=1.5cm,left=2.0cm,right=2.0cm]{geometry}
 \usepackage{listings,jlisting}
 \usepackage{mips}
+\usepackage[dvipdfmx]{hyperref}
+\usepackage{pxjahyper}
 \usepackage{amssymb} % needed for math
 \usepackage{amsmath} % needed for math
 \usepackage[utf8]{inputenc} % this is needed for german umlauts
@@ -15,7 +17,7 @@
 \definecolor{mauve}{rgb}{0.58,0,0.82}
 
 \lstset{ %
-  language=bash,       % the language of the code
+  language=python,       % the language of the code
   basicstyle=\ttfamily,       % the size of the fonts that are used for the code
   numbers=left,                   % where to put the line-numbers
   numberstyle=\color{gray},  % the style that is used for the line-numbers
@@ -49,16 +51,62 @@
 
 \section{目的}
 \section{収集するデータ}
-  \begin{itemize}
-    \item 
-  \end{itemize}
+  \begin{enumerate}
+    \item 馬の名前
+    \item レース名
+    \item 競馬場の距離
+    \item 競馬場の場所
+    \item 騎手
+    \item レーン
+    \item オッズ
+    \item レース結果
+    \item 親
+  \end{enumerate}
 \section{対象のサイト}
+  \href{https://www.netkeiba.com}{netkeiba.com}をスクレイピングする。この中でも、G1,G2,G３を対象に全てのレース結果をスクレイピングする。
 \section{開発について}
-  \subsection{開発手法}
+  \subsection{開発における決まりごと}
+
+    \begin{itemize}
+      \item テスト駆動開発(TDD)による開発を行う。\\
+      \item commit, pushは関数、メソッド単位で細かく行い進捗状況をリアルタイムで確認できるようにする。\\
+      \item メソッドにはコメントを書く。\\
+      以下のように描いて欲しい。
+\begin{lstlisting}[caption=コメントの例,label=ラベル1]
+  def hoge(a, b):
+    """ 足し算をするメソッド
+    a: int
+    b: int
+    戻り値: int
+    """
+    return a + b
+\end{lstlisting}
+    \end{itemize}
   \subsection{pythonのバージョンと使用するライブラリ}
+    \begin{itemize}
+      \item pythonのバージョン\\
+        python3.7.1
+
+      \item beatifulsoupのバージョン\\
+        beatifulsoup4を使用。\\
+        以下のコマンドでインストールすれば良い。
+\begin{lstlisting}[caption=install command,label=ラベル2]
+  $ conda install beatifulsoup4
+\end{lstlisting}
+
+      \item requestsのバージョン\\
+        以下のコマンドでインストールすれば良い。
+\begin{lstlisting}[caption=install command,label=ラベル3]
+  $ conda install requests
+\end{lstlisting}
+
+      \item pandasはすでにanacondaに入ってるのでそれを使う。\\
+      pandas -- スクレイピングしたデータをcsv形式で保存するときに使う。
+    \end{itemize}
+
   \subsection{ディレクトリ構造}
     % ソースコードを直接記入
-    \begin{lstlisting}[caption=プロジェクトのディレクトリ構造,label=ラベル]
+    \begin{lstlisting}[caption=プロジェクトのディレクトリ構造,label=ラベル4]
       .
       ├── README.md
       ├── docs
@@ -72,15 +120,30 @@
     \end{lstlisting}
 
   \subsection{作成するモジュールのメソッドについて}
+    \begin{itemize}
+      \item   scraper.pyでは以下のメソッドを作成する。
+\begin{lstlisting}[caption=install command,label=ラベル5]
+  def get_race(url):
+      """レースのURLを受け取り収集するデータをスクレイピングして、
+      二次元配列として返す
+      url: string, スクレイピングするレースのurl
+      戻り値: 二次元配列, 収集したデータを馬ごとに整理した二次元配列
+      """
+      ~実装部分~
+\end{lstlisting}
+
+      \item main.pyでは10年分のG１、G２、G3のレースをスクレイピングする。
+    \end{itemize}
   \subsection{データの保存方法}
+    csv形式で保存する。
 
+  \subsection{参考サイト}
+    \begin{itemize}
+      \item スクレピングの参考サイト\\
+      \href{https://qiita.com/penguinz222/items/6a30d026ede2e822e245}{python3 クローリングスクレイピング}
+      \item pythonのunittestの使い方の参考サイト\\
+      \href{https://qiita.com/aomidro/items/3e3449fde924893f18ca}{Python標準のunittestの使い方メモ}
 
-
-
-
-
-
-
-
+    \end{itemize}
 
 \end{document}
