@@ -16,8 +16,8 @@ def Scraper(url):
     return url
 
 
-# その年のレース一覧を取得する
 def race_urls(year: int, month: int):
+    # その年のレースの結果のページのurlを取得する。
     payload = {
         "pid": "schedule",
         "select": "schedule",
@@ -34,32 +34,57 @@ def race_urls(year: int, month: int):
     else:
         table = tables[0]
     res = []
-    for url in map(lambda x: x.a.get("href"), table.find_all("td", class_="txt_l")):
-        if url[0] == "/":
-            res.append(BASE_URL + url)
-        else:
-            res.append(BASE_URL + "/" + url)
-
+    objects = table.find_all("td", class_="txt_l")
+    for obj in objects:
+        try:
+            url = obj.find("a").get("href")
+            if url[0] == "/":
+                res.append(BASE_URL + url)
+            else:
+                res.append(BASE_URL + "/" + url)
+        except AttributeError:
+            continue
     return res
-
-# 中間ページから結果のページのurlを取得る
 
 
 def trans_result_page(mid_url):
+    # 中間ページから結果のページのurlを取得る
     html = requests.get(mid_url)
     html_contents = html.content
     html_soup = BeautifulSoup(html_contents, "html.parser")
-    url = html_soup.find_all(class_='racebtn')[1].find_all('li')[
-        3].find('a').get('href')
-    return BASE_URL + url
+    try:
+        url = html_soup.find_all(class_='racebtn')[1].find_all('li')[
+            3].find('a').get("href")
+        return BASE_URL + url
+    except AttributeError:
+        return "None"
+
+
+def scraper_data(year: int):
+    # year年の重賞レースの結果をスクレイピングして、三次元配列に保存する。
+    urls = race_urls(year, "")  # その年の重賞レースの結果の中間URLnoリスト
+    time.sleep(1)
+    res = []
+    for url in tqdm(urls):
+        result_url = trans_result_page(url)  # レース結果のページのurlを取得
+        time.sleep(1)
+        if result_url == "None":
+            res.append([])
+        else:
+            result = scraper.scraper_keiba_net(result_url)
+            res.append(result)
+
+    return res
 
 
 if __name__ == "__main__":
-    urls = race_urls(2018, "")
-    # for url in urls:
-    # print(url)
-
-    url_target = "https://race.netkeiba.com/?pid=special&id=0124"
-    url = trans_result_page(url_target)
-    print(url)
-# #main > div.GradeRace_Area > div > div.RaceNavi_Box.fc > div.Right_Box > div > ul:nth-child(2) > li:nth-child(4) > a
+    # res = scraper_data(2018)
+    # df = pd.DataFrame(res)
+    # df.to_csv("data.csv", encoding="utf_8")
+    results = []
+    for year in range(2009, 2018):
+        print("scraping of", year)
+        res = scraper_data(year)
+        results.append(res)
+    df = pd.DataFrame(results)
+    df.to_csv("data.csv", encoding="utf_8")

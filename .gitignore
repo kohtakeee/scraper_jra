@@ -3,3 +3,9 @@ __pycache__/
 
 # atomの.DS_Storeもgitにあげない
 .DS_store
+
+# 
+data.csv
+
+# 
+/.ipynb_checkpoints

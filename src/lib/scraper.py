@@ -1,53 +1,62 @@
 import requests
 from bs4 import BeautifulSoup
 
-#このurlは2019/02/17(日)のフェブラリーステークス(G1)のレース結果です。
-res = requests.get('https://race.netkeiba.com/?pid=race&id=c201905010811&mode=result')
-html_doc = res.content
-soup = BeautifulSoup(html_doc, 'html.parser')
 
-#webページの上段を獲得する
-div_house_detail = soup.find('dl', class_='racedata')
+def scraper_keiba_net(url):
 
-#レース名を獲得する
-race_name = div_house_detail.find('h1')
-print(race_name.get_text().replace(u"\xa0",u""))
+    # このurlは2019/02/17(日)のフェブラリーステークス(G1)のレース結果です。
+    res = requests.get(url)
+    html_doc = res.content
+    soup = BeautifulSoup(html_doc, 'html.parser')
 
-#コースの距離と種類を獲得する
-race_detail = div_house_detail.find('p')
-print(race_detail.get_text().replace("\xa0",""))
+    # webページの上段を獲得する
+    div_house_detail = soup.find('dl', class_='racedata')
 
-#コースの状態と天気と時間
-race_detail = div_house_detail.find_all('p')
+    # レース名を獲得する
+    race_name = div_house_detail.find('h1')
+    print(race_name.get_text().replace(u"\xa0", u""))
 
-for rd in race_detail:
-    headers = []
-    headers.append(rd.text)
+    # コースの距離と種類を獲得する
+    race_detail = div_house_detail.find('p')
+    print(race_detail.get_text().replace("\xa0", ""))
 
-for header in headers:
-    print(header.replace("\xa0",""))
+    # コースの状態と天気と時間
+    race_detail = div_house_detail.find_all('p')
 
-#リストを使ってレース結果を保存する
-results = []
+    for rd in race_detail:
+        headers = []
+        headers.append(rd.text)
 
-res_tables = soup.find_all('table', class_='race_table_01')
+    for header in headers:
+        print(header.replace("\xa0", ""))
 
-for table in res_tables:
-    headers = []
-    rows = table.find_all('tr')
-    #まず、フィールド名を決めるために、最初の行からヘッダーセルを獲得する
-    for header in table.find('tr').find_all('th'):
-        headers.append(header.text)
+    # リストを使ってレース結果を保存する
+    results = []
 
-    #つぎに、1行目以外の行を処理する
-    for row in table.find_all('tr')[1:]:
-        values = []
-        for col in row.find_all(['th', 'td']):
-            values.append(col.text)
-        if values:
-            result_dict = {headers[i]: values[i] for i in
-            range(len(values))}
-            results.append(result_dict)
-#結果を表示
-for result in results:
-    print(result)
+    res_tables = soup.find_all('table', class_='race_table_01')
+
+    for table in res_tables:
+        headers = []
+        # rows = table.find_all('tr')
+        # まず、フィールド名を決めるために、最初の行からヘッダーセルを獲得する
+        for header in table.find('tr').find_all('th'):
+            headers.append(header.text)
+
+        # 一番最初の行に
+        # results.append(headers)
+       # つぎに、1行目以外の行を処理する
+
+        for row in table.find_all('tr')[1:]:
+            values = []
+            for col in row.find_all(['th', 'td']):
+                values.append(col.text)
+            if values:
+                result_dict = [values[i] for i in
+                               range(len(values))]
+
+                results.append(result_dict)
+
+    return results
+# 結果を表示
+# for result in results:
+#    print(result)

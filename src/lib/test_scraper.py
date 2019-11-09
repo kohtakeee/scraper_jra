@@ -1,2 +1,2 @@
 import unittest
-import scraper
+from . import scraper
