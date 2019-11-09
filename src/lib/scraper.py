@@ -14,7 +14,7 @@ def scraper_keiba_net(url):
 
     # レース名を獲得する
     race_name = div_house_detail.find('h1')
-    print(race_name.get_text().replace(u"\xa0", u""))
+    print("\n" + race_name.get_text().replace(u"\xa0", u""))
 
     # コースの距離と種類を獲得する
     race_detail = div_house_detail.find('p')

@@ -56,6 +56,8 @@ def trans_result_page(mid_url):
         url = html_soup.find_all(class_='racebtn')[1].find_all('li')[
             3].find('a').get("href")
         return BASE_URL + url
+    except IndexError:
+        return "None"
     except AttributeError:
         return "None"
 
