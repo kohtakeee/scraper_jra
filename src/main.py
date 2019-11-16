@@ -45,7 +45,7 @@ class Scraper:
     def scraping_2011(self):
         """"２０１１年のレース結果をスクレイピングするメソッド."""
         target_2011 = [
-            [[1, 8], [2, 8]],  # 札幌競馬場のレースの情報　[[第何回, 何日]]
+            [[1, 8, ], [2, 8]],  # 札幌競馬場のレースの情報　[[第何回, 何日]]
             [[1, 8], [2, 8]],  # 函館競馬場のレースの情報　[[第何回, 何日]]
             [],  # 福島競馬場のレースの情報[　[[第何回, 何日]]
 
@@ -56,36 +56,43 @@ class Scraper:
             [],  # 中京競馬場のレースの情報　[[第何回, 何日]]
             [[1, 8], [2, 8], [3, 12], [4, 8], [5, 8],
                 [6, 8]],  # 京都競馬場のレースの情報　[[第何回, 何日]]
-            [[1, 8], [2, 8], [3, 4], [4, 4], [5, 8],
-                [6, 8]],  # 阪神競馬場のレースの情報　[[第何回, 何日]]
+            [[1, 8, [6]], [2, 8], [3, 4], [4, 4], [5, 8],
+                [6, 8]],  # 阪神競馬場のレースの情報　[[第何回, 何日]], 1, 8, ６レース目をスキップする
             # 小倉競馬場のレースの情報　[[第何回, 何日]]
-            [[1, 8], [2, 12], [3, 2], [4, 12], [5, 10]]
+            [[1, 8], [2, 12], [3, 2], [4, 12], [5, 10, [1, 2]]]
         ]
         self.scraping(target_2011, 2011)
 
     def scraping(self, target: List[List[int]], year: int):
         """特定の年のレース結果をスクレイピングするメソッド."""
         # 10個のの開催場所
+        assert len(target) == 10, "length of target is not 10."
+
         for i, days in tqdm(enumerate(target)):
             spot = i + 1
             self.spot_scraping(year, spot, days)
 
-    def spot_scraping(self, year: int, spot: int, days: List[List[int]]):
+    def spot_scraping(self, year: int, spot: int, days):
         """spot: 競馬場, 第何回とレース何日めのペアの配列を受け取る."""
         for pair in tqdm(days):
-            assert len(pair) == 2, "length of pair is not 2."
             siries = pair[0]
             races = pair[1]
-            self.race_scraping(year, spot, siries, races)
+            if len(pair) == 2:
+                self.race_scraping(year, spot, siries, races)
+            elif len(pair) == 3:
+                assert isinstance(
+                    pair[2], list), "type of pair[2] is not List[int]."
+                skiplst = pair[2]
+                self.race_scraping(year, spot, siries, races, skiplst)
 
-    def race_scraping(self, year: int, spot: int, siries: int, races: int):
-        """spot: 競馬場, siries: 第何回、race:何日目、 レーススクレイピングする."""
-        for race in tqdm(range(races)):
+    def race_scraping(self, year: int, spot: int, siries: int, races: int, skiplst=[]):
+        """spot: 競馬場, siries: 第何回、race:何日目、 レーススクレイピングする, skip: 何レース目をスキップするか、デフォルトは空リスト."""
+        for race in tqdm(range(1, races+1)):
             url = BASE_URL + "/?pid=race&id=c" + \
                 str(year) + str(spot).zfill(2) + \
-                str(siries).zfill(2) + str(race+1).zfill(2) + "11&mode=result"
+                str(siries).zfill(2) + str(race).zfill(2) + "11&mode=result"
             print(url + "\n")
-            if siries == 1 and spot == 9 and race + 1 == 6:
+            if race in skiplst:
                 continue
             else:
                 time.sleep(1)
