@@ -1,8 +1,9 @@
 import requests
 from bs4 import BeautifulSoup
+from typing import List
 
 
-def scraper_keiba_net(url):
+def scraper_keiba_net(url: str) -> List[List[str]]:
 
     # このurlは2019/02/17(日)のフェブラリーステークス(G1)のレース結果です。
     res = requests.get(url)
@@ -13,12 +14,17 @@ def scraper_keiba_net(url):
     div_house_detail = soup.find('dl', class_='racedata')
 
     # レース名を獲得する
-    race_name = div_house_detail.find('h1')
-    print("\n" + race_name.get_text().replace(u"\xa0", u""))
+    race_name = div_house_detail.find('h1').get_text().replace(u"\xa0", u"")
+    print("\n" + race_name)
 
     # コースの距離と種類を獲得する
-    race_detail = div_house_detail.find('p')
-    print(race_detail.get_text().replace("\xa0", ""))
+    race_detail = div_house_detail.find('p').get_text().replace("\xa0", "")
+    print(race_detail)
+
+    # レースの日にち
+    div_race_date = soup.find('div', class_='race_otherdata')
+    race_date = div_race_date.find('p').get_text().replace("\xa0", "")
+    print(race_date)
 
     # コースの状態と天気と時間
     race_detail = div_house_detail.find_all('p')
@@ -32,18 +38,18 @@ def scraper_keiba_net(url):
 
     # リストを使ってレース結果を保存する
     results = []
+    detail = [race_date, race_name, race_detail[0].text.replace("\xa0", "")]
+    results.append(detail)
 
     res_tables = soup.find_all('table', class_='race_table_01')
 
     for table in res_tables:
         headers = []
-        # rows = table.find_all('tr')
+
         # まず、フィールド名を決めるために、最初の行からヘッダーセルを獲得する
         for header in table.find('tr').find_all('th'):
             headers.append(header.text)
 
-        # 一番最初の行に
-        # results.append(headers)
        # つぎに、1行目以外の行を処理する
 
         for row in table.find_all('tr')[1:]:
@@ -60,3 +66,13 @@ def scraper_keiba_net(url):
 # 結果を表示
 # for result in results:
 #    print(result)
+
+
+# %%
+if __name__ == "__main__":
+    url = "https://race.netkeiba.com/?pid=race&id=c201408030511"
+    res = scraper_keiba_net(url)
+    print(res)
+
+
+# %%
