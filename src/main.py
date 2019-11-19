@@ -255,6 +255,8 @@ if __name__ == "__main__":
     scp = Scraper()
     if year == "2014":
         scp.scraping_2014()
+    elif year == "2010":
+        scp.scraping_2010()
     elif year == "2011":
         scp.scraping_2011()
     elif year == "2012":
